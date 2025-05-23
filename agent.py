@@ -19,8 +19,7 @@ from livekit.plugins import (
     noise_cancellation,
     silero,
 )
-from livekit.plugins.assemblyai import AssemblyAIPlugin
-from livekit.plugins.turn_detector.multilingual import MultilingualModel
+from livekit.plugins.turn_detector.multilingual import MultilingualModel  # type: ignore
 from livekit.plugins.assemblyai import STT
 
 
@@ -71,7 +70,7 @@ async def entrypoint(ctx: JobContext):
         metrics.log_metrics(agent_metrics)
         usage_collector.collect(agent_metrics)
 
-    session = AgentSession(
+    session: AgentSession = AgentSession(
         vad=ctx.proc.userdata["vad"],
         # minimum delay for endpointing, used when turn detector believes the user is done with their turn
         min_endpointing_delay=0.5,
