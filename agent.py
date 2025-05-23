@@ -1,4 +1,5 @@
 import logging
+import os
 
 from dotenv import load_dotenv
 from livekit.agents import (
@@ -15,11 +16,12 @@ from livekit.agents import (
 from livekit.plugins import (
     cartesia,
     openai,
-    deepgram,
     noise_cancellation,
     silero,
 )
+from livekit.plugins.assemblyai import AssemblyAIPlugin
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
+from livekit.plugins.assemblyai import STT
 
 
 load_dotenv(dotenv_path=".env.local")
@@ -28,7 +30,7 @@ logger = logging.getLogger("voice-agent")
 
 class Assistant(Agent):
     def __init__(self) -> None:
-        # This project is configured to use Deepgram STT, OpenAI LLM and Cartesia TTS plugins
+        # This project is configured to use AssemblyAI STT, OpenAI LLM and Cartesia TTS plugins
         # Other great providers exist like Cerebras, ElevenLabs, Groq, Play.ht, Rime, and more
         # Learn more and pick the best one for your app:
         # https://docs.livekit.io/agents/plugins
@@ -36,7 +38,7 @@ class Assistant(Agent):
             instructions="You are a voice assistant created by LiveKit. Your interface with users will be voice. "
             "You should use short and concise responses, and avoiding usage of unpronouncable punctuation. "
             "You were created as a demo to showcase the capabilities of LiveKit's agents framework.",
-            stt=deepgram.STT(),
+            stt=STT(api_key=os.environ["ASSEMBLYAI_API_KEY"]),
             llm=openai.LLM(model="gpt-4o-mini"),
             tts=cartesia.TTS(),
             # use LiveKit's transformer-based turn detector
